@@ -51,6 +51,20 @@ def mutate(population: list[str]):
         new_individual[gen_idx] = '0' if new_individual[gen_idx] == '1' else '1'
         population[individual_idx] = ''.join(new_individual)
 
+def is_convergent(population: list[str]):
+    model = population[0]
+    individual_idx = 1
+
+    while individual_idx < len(population):
+        for char_idx in range(len(model)):
+            individual = population[individual_idx]
+            if model[char_idx] != individual[char_idx]:
+                return False
+        
+        individual_idx += 1
+
+    return True
+
 def genetic(N = 14, L = 10):
     generation_num = 1
     population = []
@@ -62,7 +76,7 @@ def genetic(N = 14, L = 10):
 
     log_generation_data(population, population_eval, generation_num)
 
-    while mean(population_eval) < 1:
+    while not is_convergent(population):
         population = select(population, population_eval)
         reproduce(population)
         mutate(population)
